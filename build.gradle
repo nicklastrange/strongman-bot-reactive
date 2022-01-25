@@ -1,0 +1,39 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.nicklastrange'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //Discord4J
+    implementation 'com.discord4j:discord4j-core:3.2.1'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    compileOnly 'org.projectlombok:lombok'
+//    runtimeOnly 'io.r2dbc:r2dbc-postgresql'
+//    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test:3.4.14'
+
+    implementation 'org.slf4j:slf4j-api:1.7.33'
+    compileOnly 'org.tuxdude.logback.extensions:logback-colorizer:1.0.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
