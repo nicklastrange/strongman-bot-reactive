@@ -21,11 +21,11 @@ repositories {
 dependencies {
     //Discord4J
     implementation 'com.discord4j:discord4j-core:3.2.1'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     compileOnly 'org.projectlombok:lombok'
-//    runtimeOnly 'io.r2dbc:r2dbc-postgresql'
-//    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'io.r2dbc:r2dbc-postgresql'
+    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test:3.4.14'
