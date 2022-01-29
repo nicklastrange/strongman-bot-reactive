@@ -6,6 +6,8 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -23,4 +25,6 @@ public class Server {
     private String serverName;
     @Column("server_prefix")
     private String serverPrefix;
+    @Column("image_only_channels")
+    private List<String> imageOnlyChannels = new ArrayList<>();
 }
