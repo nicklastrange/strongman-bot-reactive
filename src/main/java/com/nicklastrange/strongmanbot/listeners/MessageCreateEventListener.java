@@ -19,10 +19,12 @@ public class MessageCreateEventListener {
 
     private final Collection<Command> commands;
     private final ServerService serverService;
+    private final ImageOnlyChannelEventListener imageOnlyChannelEventListener;
 
-    public MessageCreateEventListener(ApplicationContext ctx, ServerService serverService) {
+    public MessageCreateEventListener(ApplicationContext ctx, ServerService serverService, ImageOnlyChannelEventListener imageOnlyChannelEventListener) {
         commands = ctx.getBeansOfType(Command.class).values();
         this.serverService = serverService;
+        this.imageOnlyChannelEventListener = imageOnlyChannelEventListener;
     }
 
     public Mono<Void> handle(MessageCreateEvent event) {
@@ -30,6 +32,13 @@ public class MessageCreateEventListener {
                 .flatMap(server -> {
                     final Message message = event.getMessage();
                     final String serverPrefix = server.getServerPrefix();
+                    //TODO: fix this!!!
+                    if (Boolean.TRUE.equals(event.getMessage().getChannel()
+                            .filter(channel -> server.getImageOnlyChannels().contains(channel.getId().asString()))
+                            .hasElement()
+                            .block())) {
+                        return imageOnlyChannelEventListener.handle(event);
+                    }
                     if (!message.getContent().startsWith(serverPrefix)) {
                         return Mono.empty();
                     }

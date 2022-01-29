@@ -7,7 +7,9 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -26,5 +28,5 @@ public class Server {
     @Column("server_prefix")
     private String serverPrefix;
     @Column("image_only_channels")
-    private List<String> imageOnlyChannels = new ArrayList<>();
+    private Set<String> imageOnlyChannels = new HashSet<>();
 }
