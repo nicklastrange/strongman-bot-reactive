@@ -9,6 +9,11 @@ public class ImageOnlyChannelEventListener {
 
 
     public Mono<Void> handle(MessageCreateEvent event) {
-        return Mono.empty();
+
+        return event
+                .getMessage()
+                .getChannel()
+                .flatMap(channel -> channel.createMessage("OK!"))
+                .then();
     }
 }
