@@ -4,7 +4,11 @@ import com.nicklastrange.strongmanbot.commands.Command;
 import com.nicklastrange.strongmanbot.handlers.ImageOnlyChannelEventHandler;
 import com.nicklastrange.strongmanbot.service.ServerService;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.User;
+import discord4j.rest.util.Permission;
+import discord4j.rest.util.PermissionSet;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Data
@@ -52,6 +57,20 @@ public class MessageCreateEventListener {
                             final String content = message.getContent();
                             for (Command command : commands) {
                                 if (content.startsWith(serverPrefix +command.getName())) {
+                                    final Set<Permission> permissionSet = command.getPermissions();
+                                    if (event.getMember().isPresent() && !permissionSet.isEmpty()) {
+                                        final Member member = event.getMember().get();
+                                        return member.getBasePermissions()
+                                                .flatMap(permissions -> {
+                                                    for (Permission permission : command.getPermissions()) {
+                                                        if (permissions.contains(permission)) {
+                                                            log.info("Execution of command: {}", serverPrefix+command.getName());
+                                                            return command.execute(event);
+                                                        }
+                                                    }
+                                                    return channel.get().createMessage("Insufficient permissions!");
+                                                });
+                                    }
                                     log.info("Execution of command: {}", serverPrefix+command.getName());
                                     return command.execute(event);
                                 }

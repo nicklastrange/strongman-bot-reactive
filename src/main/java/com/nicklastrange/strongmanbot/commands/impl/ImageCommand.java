@@ -5,6 +5,7 @@ import com.nicklastrange.strongmanbot.model.Server;
 import com.nicklastrange.strongmanbot.service.ServerService;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.channel.GuildChannel;
+import discord4j.rest.util.Permission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -25,6 +26,14 @@ public class ImageCommand implements Command {
     @Override
     public String getName() {
         return "image";
+    }
+
+    @Override
+    public Set<Permission> getPermissions() {
+        return Set.of(
+                Permission.MANAGE_CHANNELS,
+                Permission.ADMINISTRATOR
+        );
     }
 
     @Override
