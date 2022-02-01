@@ -1,7 +1,7 @@
 package com.nicklastrange.strongmanbot.listeners;
 
 import com.nicklastrange.strongmanbot.commands.Command;
-import com.nicklastrange.strongmanbot.model.Server;
+import com.nicklastrange.strongmanbot.handlers.ImageOnlyChannelEventHandler;
 import com.nicklastrange.strongmanbot.service.ServerService;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
@@ -21,12 +21,12 @@ public class MessageCreateEventListener {
 
     private final Collection<Command> commands;
     private final ServerService serverService;
-    private final ImageOnlyChannelEventListener imageOnlyChannelEventListener;
+    private final ImageOnlyChannelEventHandler imageOnlyChannelEventHandler;
 
-    public MessageCreateEventListener(ApplicationContext ctx, ServerService serverService, ImageOnlyChannelEventListener imageOnlyChannelEventListener) {
+    public MessageCreateEventListener(ApplicationContext ctx, ServerService serverService, ImageOnlyChannelEventHandler imageOnlyChannelEventHandler) {
         commands = ctx.getBeansOfType(Command.class).values();
         this.serverService = serverService;
-        this.imageOnlyChannelEventListener = imageOnlyChannelEventListener;
+        this.imageOnlyChannelEventHandler = imageOnlyChannelEventHandler;
     }
 
     public Mono<Void> handle(MessageCreateEvent event) {
@@ -43,7 +43,7 @@ public class MessageCreateEventListener {
                                 return Mono.empty();
                             }
                             if (channel.isEmpty()) {
-                                return imageOnlyChannelEventListener.handle(event);
+                                return imageOnlyChannelEventHandler.handle(event);
                             }
                             final String serverPrefix = server.getServerPrefix();
                             if (!message.getContent().startsWith(serverPrefix)) {
