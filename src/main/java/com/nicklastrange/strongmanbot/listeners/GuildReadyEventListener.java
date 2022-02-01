@@ -7,12 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import static com.nicklastrange.strongmanbot.util.BotConstants.DEFAULT_PREFIX;
+
 @Slf4j
 @Component
 public class GuildReadyEventListener {
 
     private final ServerService serverService;
-    private final String defaultPrefix = "!";
 
     public GuildReadyEventListener(ServerService serverService) {
         this.serverService = serverService;
@@ -32,7 +33,7 @@ public class GuildReadyEventListener {
                     final Server server = Server.builder()
                             .serverId(serverId)
                             .serverName(serverName)
-                            .serverPrefix(defaultPrefix)
+                            .serverPrefix(DEFAULT_PREFIX)
                             .build();
                     serverService.addNewServer(server)
                             .subscribe(s -> log.info("Database entry created: {}", s));

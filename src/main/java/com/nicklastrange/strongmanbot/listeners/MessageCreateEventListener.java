@@ -23,10 +23,10 @@ public class MessageCreateEventListener {
     private final ServerService serverService;
     private final ImageOnlyChannelEventHandler imageOnlyChannelEventHandler;
 
-    public MessageCreateEventListener(ApplicationContext ctx, ServerService serverService, ImageOnlyChannelEventHandler imageOnlyChannelEventHandler) {
+    public MessageCreateEventListener(ApplicationContext ctx) {
         commands = ctx.getBeansOfType(Command.class).values();
-        this.serverService = serverService;
-        this.imageOnlyChannelEventHandler = imageOnlyChannelEventHandler;
+        this.serverService = ctx.getBean(ServerService.class);
+        this.imageOnlyChannelEventHandler = ctx.getBean(ImageOnlyChannelEventHandler.class);
     }
 
     public Mono<Void> handle(MessageCreateEvent event) {

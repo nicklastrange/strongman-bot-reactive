@@ -6,15 +6,10 @@ import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.HashSet;
-import java.util.Set;
+import static com.nicklastrange.strongmanbot.util.BotConstants.IMAGE_EXTENSIONS;
 
 @Component
 public class ImageOnlyChannelEventHandler {
-
-    private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpg",
-            "jpeg", "png", "gif", "webp", "tiff", "svg", "apng");
-
 
     public Mono<Void> handle(MessageCreateEvent event) {
 
