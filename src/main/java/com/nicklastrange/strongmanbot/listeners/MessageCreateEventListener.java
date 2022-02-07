@@ -62,7 +62,7 @@ public class MessageCreateEventListener {
                                         final Member member = event.getMember().get();
                                         return member.getBasePermissions()
                                                 .flatMap(permissions -> {
-                                                    for (Permission permission : command.getPermissions()) {
+                                                    for (Permission permission : permissionSet) {
                                                         if (permissions.contains(permission)) {
                                                             log.info("Execution of command: {}", serverPrefix+command.getName());
                                                             return command.execute(event);
