@@ -1,19 +1,34 @@
 package com.nicklastrange.strongmanbot.config;
 
-import io.r2dbc.spi.ConnectionFactory;
-import org.springframework.boot.r2dbc.ConnectionFactoryBuilder;
+import com.nicklastrange.strongmanbot.listeners.GuildReadyEventListener;
+import com.nicklastrange.strongmanbot.listeners.MessageCreateEventListener;
+import discord4j.core.DiscordClientBuilder;
+import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.domain.guild.GuildCreateEvent;
+import discord4j.core.event.domain.message.MessageCreateEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class BotConfig {
 
+    private final ApplicationContext ctx;
+
     @Bean
-    public ConnectionFactory connectionFactory() {
-        return ConnectionFactoryBuilder
-                .withUrl(System.getenv("DATABASE_URL"))
-                .username(System.getenv("DATABASE_USERNAME"))
-                .password(System.getenv("DATABASE_PASSWORD"))
-                .build();
+    public GatewayDiscordClient discordClient() {
+        GatewayDiscordClient discordClient = DiscordClientBuilder.create(System.getenv("BOT_TOKEN"))
+                .build()
+                .login()
+                .block();
+
+        discordClient.on(GuildCreateEvent.class, ctx.getBean(GuildReadyEventListener.class)::handle)
+                .subscribe();
+        discordClient.on(MessageCreateEvent.class, ctx.getBean(MessageCreateEventListener.class)::handle)
+                .subscribe();
+
+        return discordClient;
     }
 }

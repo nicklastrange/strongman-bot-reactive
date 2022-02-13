@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-@Table("servers")
+@Table("server")
 public class Server {
     @Id
     private Long id;

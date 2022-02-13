@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 
 public interface ServerRepository extends ReactiveCrudRepository<Server, Long> {
 
-    @Query("SELECT * FROM servers WHERE server_id = :serverId")
+    @Query("SELECT * FROM server WHERE server_id = :serverId")
     Mono<Server> findServerByServerId(Long serverId);
 }
