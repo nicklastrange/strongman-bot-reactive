@@ -5,7 +5,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -26,4 +28,11 @@ public class Server {
     private String serverPrefix;
     @Column("image_only_channels")
     private Set<String> imageOnlyChannels = new HashSet<>();
+    @Column("is_twitch_notification_on")
+    private boolean isTwitchNotificationOn = false;
+    @Column("twitch_notification_channel")
+    private String twitchNotificationChannel = "";
+    @Column("twitch_streamers_to_notify")
+    private Set<String> twitchStreamersToNotify = new HashSet<>();
+
 }

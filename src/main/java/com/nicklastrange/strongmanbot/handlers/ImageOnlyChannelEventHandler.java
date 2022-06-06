@@ -4,6 +4,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Attachment;
 import discord4j.core.object.entity.Message;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.nicklastrange.strongmanbot.util.BotConstants.IMAGE_EXTENSIONS;

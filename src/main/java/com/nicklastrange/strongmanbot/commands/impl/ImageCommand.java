@@ -8,7 +8,9 @@ import discord4j.core.object.entity.channel.GuildChannel;
 import discord4j.rest.util.Permission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,32 +60,22 @@ public class ImageCommand implements Command {
     }
 
     private Mono<Void> listImageOnlyChannels(MessageCreateEvent event) {
-        final Mono<Server> serverByServerId = serverService.findServerByServerId(event.getGuildId().get().asLong());
-        return event
-                .getMessage()
-                .getChannel()
-                .flatMap(channel -> serverByServerId
-                        .flatMap(server -> {
-                            if (server.getImageOnlyChannels().isEmpty()) {
-                                return channel.createMessage("No channel is set as **image-only** on this server!");
-                            }
-                            final Set<String> imageOnlyChannels = server.getImageOnlyChannels();
-                            return event.getGuild()
-                                    .flatMap(guild -> guild.getChannels()
-                                            .filter(guildChannel -> imageOnlyChannels.contains(guildChannel.getId().asString()))
-                                            .collect(Collectors.toList())
-                                            .flatMap(list -> {
-                                                StringBuilder stringBuilder = new StringBuilder();
-                                                stringBuilder.append("```\n");
-                                                for (GuildChannel guildChannel : list) {
-                                                    String tmp = "- " + guildChannel.getName() + "\n";
-                                                    stringBuilder.append(tmp);
-                                                }
-                                                stringBuilder.append("```\n");
-                                                return channel.createMessage("Channel(s) that are set as **image-only**: \n" + stringBuilder);
-                                            }));
-                        })
-                        .then());
+
+        return Flux.zip(serverService.findServerByServerId(event.getGuildId().get().asLong()), event.getMessage().getChannel(), event.getGuild())
+                .flatMap(tuple -> {
+                    if (tuple.getT1().getImageOnlyChannels().isEmpty()) {
+                        return tuple.getT2().createMessage("No channel is set as **image-only** on this server!");
+                    }
+                    StringBuilder response = new StringBuilder("```\n");
+                    return tuple.getT3()
+                            .getChannels()
+                            .filter(guildChannel -> tuple.getT1().getImageOnlyChannels().contains(guildChannel.getId().asString()))
+                            .doOnNext(guildChannel -> response.append("- ").append(guildChannel.getName()).append("\n"))
+                            .doOnComplete(() -> response.append("```\n"))
+                            .publishOn(Schedulers.boundedElastic())
+                            .doOnComplete(() -> tuple.getT2().createMessage("Channel(s) that are set as **image-only**: \n" + response).subscribe());
+                })
+                .then();
     }
 
     public Mono<Void> addImageOnlyChannel(MessageCreateEvent event, String channelName) {

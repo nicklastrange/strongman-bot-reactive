@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import reactor.core.scheduler.Schedulers;
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,16 +20,12 @@ public class BotConfig {
 
     @Bean
     public GatewayDiscordClient discordClient() {
-        GatewayDiscordClient discordClient = DiscordClientBuilder.create(System.getenv("BOT_TOKEN"))
+        return DiscordClientBuilder.create(System.getenv("BOT_TOKEN"))
                 .build()
                 .login()
+                .publishOn(Schedulers.boundedElastic())
+                .doOnNext(client -> client.on(GuildCreateEvent.class, ctx.getBean(GuildReadyEventListener.class)::handle).subscribe())
+                .doOnNext(client -> client.on(MessageCreateEvent.class, ctx.getBean(MessageCreateEventListener.class)::handle).subscribe())
                 .block();
-
-        discordClient.on(GuildCreateEvent.class, ctx.getBean(GuildReadyEventListener.class)::handle)
-                .subscribe();
-        discordClient.on(MessageCreateEvent.class, ctx.getBean(MessageCreateEventListener.class)::handle)
-                .subscribe();
-
-        return discordClient;
     }
 }

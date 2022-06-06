@@ -3,7 +3,7 @@
     <conversionRule conversionWord="colorize" converterClass="org.tuxdude.logback.extensions.LogColorizer" />
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>INFO</level>
         </filter>
         <encoder>
             <pattern>%date %colorize([%level]) %yellow([%thread]) %cyan(%logger{10}) %msg%n</pattern>

@@ -6,6 +6,7 @@ import discord4j.core.event.domain.guild.GuildCreateEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import static com.nicklastrange.strongmanbot.util.BotConstants.DEFAULT_PREFIX;
 
@@ -28,6 +29,7 @@ public class GuildReadyEventListener {
                 .doOnNext(s -> {
                     log.info("Bot has connected to server with name: {}", serverName);
                 })
+                .publishOn(Schedulers.boundedElastic())
                 .doOnError(e -> {
                     log.info("Bot has connected to new server, creating database entry!");
                     final Server server = Server.builder()

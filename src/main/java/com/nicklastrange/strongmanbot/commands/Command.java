@@ -12,7 +12,7 @@ public interface Command {
 
     default Set<Permission> getPermissions() {
         return Set.of();
-    };
+    }
 
     Mono<Void> execute(MessageCreateEvent event);
 }

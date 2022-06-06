@@ -1,7 +1,6 @@
 package com.nicklastrange.strongmanbot.commands.impl;
 
 import com.nicklastrange.strongmanbot.commands.Command;
-import com.nicklastrange.strongmanbot.model.Server;
 import com.nicklastrange.strongmanbot.service.ServerService;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.rest.util.Permission;
@@ -13,17 +12,17 @@ import java.util.Set;
 
 @Component
 @Slf4j
-public class PrefixCommand implements Command {
+public class TwitchCommand implements Command {
 
     private final ServerService serverService;
 
-    public PrefixCommand(ServerService serverService) {
+    public TwitchCommand(ServerService serverService) {
         this.serverService = serverService;
     }
 
     @Override
     public String getName() {
-        return "prefix";
+        return "twitch";
     }
 
     @Override
@@ -33,26 +32,18 @@ public class PrefixCommand implements Command {
 
     @Override
     public Mono<Void> execute(MessageCreateEvent event) {
-        final String[] messageArray = event.getMessage().getContent().split(" ");
-        if (messageArray.length == 1) {
+
+        String[] args = event.getMessage().getContent().split(" ");
+        if (args.length == 3 && args[1].equals("add")) {
+
             return serverService.findServerByServerId(event.getGuildId().get().asLong())
-                    .zipWith(event.getMessage().getChannel())
-                    .flatMap(tuple -> tuple.getT2().createMessage("Current prefix for this server is: " + tuple.getT1().getServerPrefix()))
-                    .then();
-        }
-        if (messageArray.length == 2) {
-            return serverService.findServerByServerId(event.getGuildId().get().asLong())
-                    .doOnNext(server -> server.setServerPrefix(messageArray[1]))
+                    .doOnNext(s -> s.getTwitchStreamersToNotify().add(args[2]))
                     .flatMap(serverService::updateServer)
                     .doOnSuccess(s -> log.info("Database entry altered: {}", s))
                     .flatMap(s -> event.getMessage().getChannel())
-                    .flatMap(channel -> channel.createMessage("Server prefix changed to: " + messageArray[1]))
+                    .flatMap(channel -> channel.createMessage(String.format("Twitch streamer with name **%s** added to notification list!", args[2])))
                     .then();
         }
-        return event
-                .getMessage()
-                .getChannel()
-                .flatMap(channel -> channel.createMessage("Bad arguments provided!"))
-                .then();
+        return Mono.empty();
     }
 }
