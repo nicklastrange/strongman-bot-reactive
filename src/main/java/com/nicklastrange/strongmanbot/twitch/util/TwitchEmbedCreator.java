@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 
 public abstract class TwitchEmbedCreator {
@@ -37,7 +36,6 @@ public abstract class TwitchEmbedCreator {
                 .get(0);
 
         bot.getGuilds()
-                .filter(guild -> Optional.of(serverService.findServerByServerId(guild.getId().asLong())).isPresent())
                 .flatMap(guild -> serverService.findServerByServerId(guild.getId().asLong())
                         .flatMap(server -> {
                             boolean isTwitchNotificationOn = server.isTwitchNotificationOn();
