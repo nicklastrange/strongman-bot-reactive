@@ -62,8 +62,8 @@ public class GuildReadyEventListenerIntegrationTests extends AbstractTestContain
 
     @Test
     public void testHandleGuildCreateEvent_withExistingServer() {
-        long existingGuildId = 5555L;
-        String existingGuildName = "Test Server 1";
+        long existingGuildId = 4444L;
+        String existingGuildName = "Test Server 2";
 
         Server existingServer = Server.builder()
                 .serverId(existingGuildId)
