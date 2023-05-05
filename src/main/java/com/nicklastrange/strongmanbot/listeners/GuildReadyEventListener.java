@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.NoSuchElementException;
+
 import static com.nicklastrange.strongmanbot.util.BotConstants.DEFAULT_PREFIX;
 
 @Slf4j
@@ -26,19 +28,17 @@ public class GuildReadyEventListener {
         final String serverName = event.getGuild().getName();
 
         return serverService.findServerByServerId(serverId)
-                .doOnNext(s -> {
-                    log.info("Bot has connected to server with name: {}", serverName);
-                })
+                .doOnNext(s -> log.info("Bot has connected to server with name: {}", serverName))
                 .publishOn(Schedulers.boundedElastic())
-                .doOnError(e -> {
+                .onErrorResume(NoSuchElementException.class, e -> {
                     log.info("Bot has connected to new server, creating database entry!");
                     final Server server = Server.builder()
                             .serverId(serverId)
                             .serverName(serverName)
                             .serverPrefix(DEFAULT_PREFIX)
                             .build();
-                    serverService.addNewServer(server)
-                            .subscribe(s -> log.info("Database entry created: {}", s));
+                    return serverService.addNewServer(server)
+                            .doOnSuccess(s -> log.info("Database entry created: {}", s));
                 })
                 .then();
     }

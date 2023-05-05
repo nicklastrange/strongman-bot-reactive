@@ -6,11 +6,14 @@ import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.events.ChannelGoLiveEvent;
 import com.nicklastrange.strongmanbot.twitch.util.TwitchEmbedCreator;
+import com.nicklastrange.strongmanbot.util.SystemUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("!test")
 public class TwitchConfig {
 
     private final ApplicationContext ctx;
@@ -21,8 +24,8 @@ public class TwitchConfig {
 
     @Bean
     public TwitchClient twitchClientBuilder() {
-        String TWITCH_CLIENT_ID = System.getenv("TWITCH_CLIENT_ID");
-        String TWITCH_CLIENT_SECRET = System.getenv("TWITCH_CLIENT_SECRET");
+        String TWITCH_CLIENT_ID = SystemUtil.getenv("TWITCH_CLIENT_ID");
+        String TWITCH_CLIENT_SECRET = SystemUtil.getenv("TWITCH_CLIENT_SECRET");
 
         TwitchClient twitchClient = TwitchClientBuilder.builder()
                 .withClientId(TWITCH_CLIENT_ID)
