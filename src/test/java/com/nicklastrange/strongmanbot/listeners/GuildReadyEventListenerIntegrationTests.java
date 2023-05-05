@@ -22,7 +22,6 @@ public class GuildReadyEventListenerIntegrationTests extends AbstractTestContain
 
     @Autowired
     GuildReadyEventListener guildReadyEventListener;
-
     @Autowired
     ServerService serverService;
     @Mock
