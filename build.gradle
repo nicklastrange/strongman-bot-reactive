@@ -1,12 +1,12 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.3'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
     id 'java'
 }
 
 group = 'com.nicklastrange'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -20,10 +20,10 @@ repositories {
 
 dependencies {
     //Discord4J
-    implementation 'com.discord4j:discord4j-core:3.2.4'
+    implementation 'com.discord4j:discord4j-core:3.3.0-M2'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-lang3'
     implementation 'org.flywaydb:flyway-core'
     //implementation 'org.springframework.boot:spring-boot-starter-security'
     //implementation 'org.springframework.security:spring-security-oauth2-client'
@@ -31,23 +31,23 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    runtimeOnly 'io.r2dbc:r2dbc-postgresql'
+    runtimeOnly 'io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE'
     runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test:3.4.18'
-    testImplementation 'org.testcontainers:junit-jupiter:1.18.0'
-    testImplementation 'org.testcontainers:r2dbc:1.18.0'
-    testImplementation 'org.testcontainers:postgresql:1.18.0'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:r2dbc'
+    testImplementation 'org.testcontainers:postgresql'
 
     //for local development on Mac
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.92.Final:osx-aarch_64'
 
-    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-api'
     implementation 'org.tuxdude.logback.extensions:logback-colorizer:1.0.1'
 
     //twitch4j
-    implementation group: 'com.github.twitch4j', name: 'twitch4j', version: '1.8.0'
+    implementation 'com.github.twitch4j:twitch4j:1.15.0'
 }
 
 tasks.named('test') {
